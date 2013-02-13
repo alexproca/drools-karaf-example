@@ -1,0 +1,49 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:drools="http://drools.org/schema/drools-spring"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://drools.org/schema/drools-spring http://drools.org/schema/drools-spring.xsd
+    ">
+
+    <drools:resource id="adco-guvnor-package"
+                     type="PKG"
+                     source="http://localhost:8080/jboss-brms/org.drools.guvnor.Guvnor/package/ADCO/LATEST"
+                     basic-authentication="enabled"
+                     username="admin"
+                     password="admin" />
+
+    <drools:resource id="adco-local-package" type="PKG" source="file:///Users/chmoulli/Temp/ADCO_ACTIVE.pkg" />
+
+    <drools:ksession id="ksession1" type="stateful" kbase="kbase1">
+        <drools:configuration>
+            <drools:keep-reference enabled="true" />
+            <drools:clock-type type="REALTIME" />
+        </drools:configuration>
+    </drools:ksession>
+
+    <drools:resource-change-scanner id="guvnor-monitor"
+                                    interval="10" />
+
+    <drools:kagent id="kagent"
+                   kbase="kbase1"
+                   new-instance="false"
+                   use-kbase-classloader="true">
+        <drools:resources>
+            <drools:resource ref="adco-local-package"></drools:resource>
+        </drools:resources>
+    </drools:kagent>
+
+    <drools:kbase id="kbase1">
+        <drools:resources>
+            <drools:resource ref="adco-local-package"></drools:resource>
+        </drools:resources>
+        <drools:configuration>
+            <drools:mbeans enabled="true" />
+            <drools:event-processing-mode mode="STREAM" />
+            <!-- drools:multithread enabled="true" max-threads="5" / -->
+            <drools:assert-behavior mode="IDENTITY" />
+        </drools:configuration>
+    </drools:kbase>
+
+</beans>

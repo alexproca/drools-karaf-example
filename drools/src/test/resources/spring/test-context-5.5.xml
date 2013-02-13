@@ -1,0 +1,82 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:drools="http://drools.org/schema/drools-spring"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://drools.org/schema/drools-spring http://drools.org/schema/drools-spring.xsd
+    ">
+
+    <!-- Drools Spring config working with 5.3.0.Final BUT not since 5.5.0.Final
+    Error :
+
+    Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'adco-guvnor-package': Error setting property values; nested exception is org.springframework.beans.PropertyBatchUpdateException; nested PropertyAccessExceptions (1) are:
+PropertyAccessException 1: org.springframework.beans.MethodInvocationException: Property 'encoding' threw exception; nested exception is java.lang.IllegalArgumentException: Encoding attribute is only valid for classpath Resources
+
+    -->
+    <drools:resource id="adco-guvnor-package"
+                     type="PKG"
+                     source="http://localhost:8080/jboss-brms/org.drools.guvnor.Guvnor/package/ADCO/LATEST"
+                     basic-authentication="enabled"
+                     username="admin"
+                     password="admin"/>
+
+    <drools:ksession id="ksession1" type="stateful" kbase="kbase1">
+        <drools:configuration>
+            <drools:keep-reference enabled="true"/>
+            <drools:clock-type type="REALTIME"/>
+        </drools:configuration>
+    </drools:ksession>
+
+    <drools:resource-change-scanner id="guvnor-monitor"
+                                    interval="10"/>
+
+    <drools:kagent kbase="kbase1" id="kagent" new-instance="false"
+                   use-kbase-classloader="true">
+        <drools:resources>
+            <drools:resource ref="adco-guvnor-package"></drools:resource>
+        </drools:resources>
+    </drools:kagent>
+
+    <drools:kbase id="kbase1">
+        <drools:resources>
+            <drools:resource ref="adco-guvnor-package"></drools:resource>
+        </drools:resources>
+        <drools:configuration>
+            <drools:mbeans enabled="true"/>
+            <drools:event-processing-mode mode="STREAM"/>
+            <!-- drools:multithread enabled="true" max-threads="5" / -->
+            <drools:assert-behavior mode="IDENTITY"/>
+        </drools:configuration>
+    </drools:kbase>
+
+    <bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="vm://localhost?marshal=true&amp;broker.persistent=false&amp;create=true"/>
+    </bean>
+
+    <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+          init-method="start" destroy-method="stop">
+        <property name="maxConnections" value="8"/>
+        <property name="connectionFactory" ref="jmsConnectionFactory"/>
+    </bean>
+
+    <bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
+        <property name="connectionFactory" ref="pooledConnectionFactory"/>
+        <property name="concurrentConsumers" value="1"/>
+    </bean>
+
+    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+        <property name="configuration" ref="jmsConfig"/>
+    </bean>
+
+    <camelContext trace="true" id="adco-routes"
+                  xmlns="http://camel.apache.org/schema/spring">
+        <packageScan>
+            <!-- scan the following package(s) for Camel RouteBuilder classes -->
+            <package>net.eads.astrium.adco.brmsintegration.routes</package>
+        </packageScan>
+    </camelContext>
+
+
+</beans>

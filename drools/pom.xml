@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>net.eads.astrium.adco</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>drools</artifactId>
+    <name>Astrium ADCO :: Drools</name>
+    <packaging>bundle</packaging>
+
+    <properties>
+        <drools.version>5.3.0.Final</drools.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.eads.astrium.adco</groupId>
+            <artifactId>adco-typemodel-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.eads.astrium.adco</groupId>
+            <artifactId>adco-typemodel-brms</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.eads.astrium.adco</groupId>
+            <artifactId>adco-typemodel-enditem</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Import-Package>
+                            javax.annotation;version="[1.0,2)",
+                            net.eads.astrium.adco.types;version="[1.0,2)",
+                            org.apache.activemq;version="[5.3,6)",
+                            org.apache.activemq.camel.component;version="[5.3,6)",
+                            org.apache.activemq.pool;version="[5.3,6)",
+                            org.apache.camel;version="[2.10,3)",
+                            org.apache.camel.builder;version="[2.10,3)",
+                            org.apache.camel.component.jms;version="[2.9,3)",
+                            org.apache.camel.model;version="[2.10,3)",
+                            org.drools;version="[5.3,6)",
+                            org.drools.agent;version="[5.3,6)",
+                            org.drools.command.runtime.rule;version="[5.3,6)",
+                            org.drools.definition;version="[5.3,6)",
+                            org.drools.definition.rule;version="[5.3,6)",
+                            org.drools.event.knowledgeagent;version="[5.3,6)",
+                            org.drools.event.rule;version="[5.3,6)",
+                            org.drools.io;version="[5.3,6)",
+                            org.drools.runtime;version="[5.3,6)"
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+</project>

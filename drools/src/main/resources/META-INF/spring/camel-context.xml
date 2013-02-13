@@ -1,0 +1,38 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:drools="http://drools.org/schema/drools-spring"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+    ">
+
+	<bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="vm://localhost?marshal=true&amp;broker.persistent=false&amp;create=true" />
+	</bean>
+
+	<bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+		init-method="start" destroy-method="stop">
+		<property name="maxConnections" value="8" />
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+	</bean>
+
+	<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory" />
+		<property name="concurrentConsumers" value="1" />
+	</bean>
+
+	<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig" />
+	</bean>
+
+    <bean id="telemetry" class="net.eads.astrium.adco.brmsintegration.routes.TelemetryToRulesEngine">
+        <property name="kagent" ref="kagent"/>
+        <property name="kBase"  ref="kbase1"/>
+        <property name="statefulKnowledgeSession" ref="ksession1"/>
+    </bean>
+	
+	<camelContext trace="true" id="adco-routes" xmlns="http://camel.apache.org/schema/spring">
+		<routeBuilder ref="telemetry"/>
+	</camelContext>
+
+</beans>

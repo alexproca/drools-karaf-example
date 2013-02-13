@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+      <artifactId>parent</artifactId>
+      <groupId>net.eads.astrium.adco</groupId>
+      <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>net.eads.astrium.adco</groupId>
+    <artifactId>adco-typemodel</artifactId>
+    <packaging>pom</packaging>
+    <name>Astrium ADCO :: Type Model</name>
+    <version>1.0-SNAPSHOT</version>
+    <description>Astrium ADCO :: Type Model</description>
+
+    <properties>
+        <adco.branch.rootDir>../../</adco.branch.rootDir>
+        <!-- for log4j in tests within sub-modules -->
+    </properties>
+
+    <modules>
+        <module>api</module>
+        <module>enditem</module>
+        <module>brms</module>
+    </modules>
+
+</project>
