@@ -5,9 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-      <artifactId>parent</artifactId>
-      <groupId>net.eads.astrium.adco</groupId>
-      <version>1.0-SNAPSHOT</version>
+        <artifactId>parent</artifactId>
+        <groupId>net.eads.astrium.adco</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
     <groupId>net.eads.astrium.adco</groupId>
